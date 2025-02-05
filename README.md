@@ -51,3 +51,29 @@ spec:
     port: 80
     targetPort: 3000
   type: LoadBalancer
+
+
+Code For Testing
+
+Unit Tests (Jest)
+
+import { Test, TestingModule } from '@nestjs/testing';
+describe('AuthService', () => {
+  let service: AuthService;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [AuthService],
+    }).compile();
+    service = module.get<AuthService>(AuthService);
+  });
+
+  it('should validate user login', async () => {
+    expect(await service.validateOAuthLogin({ id: '123' })).toBeDefined();
+  });
+});
+
+
+Integration Tests (Supertest)
+
+request(app.getHttpServer()).post('/auth/login').send({ token: 'mockToken' });
