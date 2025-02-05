@@ -1,15 +1,30 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { FacebookAuthGuard } from '../guards/facebook-auth.guard';
+import { GoogleAuthGuard } from '../guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor() { }
 
+    @Get('google')
+    @UseGuards(GoogleAuthGuard)
+    googleAuth(@Req() req) { }
 
-    @Post("/sign-in")
-    async signIn(@Body() payload: any) {
-        console.log('body', payload);
+    @Get('google/callback')
+    @UseGuards(GoogleAuthGuard)
+    googleAuthRedirect(@Req() req, @Res() res) {
+        const { access_token } = req.user;
+        res.redirect(`http://localhost:4200/login-success?token=${access_token}`);
+    }
 
-        return await this.authService.signIn(payload);
+    @Get('facebook')
+    @UseGuards(FacebookAuthGuard)
+    facebookAuth(@Req() req) { }
+
+    @Get('facebook/callback')
+    @UseGuards(FacebookAuthGuard)
+    facebookAuthRedirect(@Req() req, @Res() res) {
+        const { access_token } = req.user;
+        res.redirect(`http://localhost:4200/login-success?token=${access_token}`);
     }
 }

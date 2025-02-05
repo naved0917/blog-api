@@ -10,7 +10,7 @@ export class BlogService {
         private readonly model: Model<Blog>,
     ) { }
 
-    async addBlog(payload) {
+    async create(payload) {
         const Blog = new this.model(payload);
         const queryResult = await Blog.save();
         return {
@@ -51,7 +51,7 @@ export class BlogService {
         };
     }
 
-    async deleteBlog(_id: string) {
+    async deleteBlog(_id: any) {
         const queryResult = await this.model.deleteOne({ _id: _id });
         const isDeleted = queryResult.deletedCount !== 0;
         return {

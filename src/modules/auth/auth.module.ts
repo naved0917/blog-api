@@ -1,21 +1,14 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthController } from './auth.controller';
-import { AuthSchema } from './auth.schema';
 import { AuthService } from './auth.service';
-import { JwtStrategy, SECRET } from './jwt.strategy';
+import { GoogleStrategy } from './google.strategy';
+import { JwtStrategy } from './jwt.strategy';
+import { FacebookStrategy } from './facebook.stretegy';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: SECRET,
-      signOptions: { expiresIn: '99h' },
-    }),
-    MongooseModule.forFeature([{ name: 'Auth', schema: AuthSchema }]),
-  ],
-  providers: [AuthService, JwtStrategy],
+  imports: [JwtModule.register({ secret: 'SECRET_KEY', signOptions: { expiresIn: '60m' } })],
   controllers: [AuthController],
-  exports: [AuthService],
+  providers: [AuthService, GoogleStrategy, FacebookStrategy, JwtStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}

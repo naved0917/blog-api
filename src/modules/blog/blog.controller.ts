@@ -1,42 +1,37 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/core/auth.guard';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { BlogService } from './blog.service';
 
 @Controller('blog')
 export class BlogController {
-    constructor(private blogService: BlogService) { }
+    constructor(private readonly blogService: BlogService) { }
 
     @Post('/add')
-    @UseGuards(JwtAuthGuard)
-    async addBlog(
-        @Body() payload: {},
-    ) {
-        return await this.blogService.addBlog(payload);
+    @UseGuards(AuthGuard('jwt'))
+    create(@Body() payload: any) {
+        return this.blogService.create(payload);
     }
 
-    @Get('/get-list')
-    // @UseGuards(JwtAuthGuard)
-    async getBlogList() {
-        return await this.blogService.getBlogList();
+    @Get('/getById/:id')
+    @UseGuards(AuthGuard('jwt'))
+    getBlog(@Param('id') id: number) {
+        return this.blogService.getBlogById(id);
     }
 
-    @Get('/get/:_id')
-    @UseGuards(JwtAuthGuard)
-    async getBlogById(@Param('_id') _id: string) {
-        return await this.blogService.getBlogById(_id);
+    @Get('/get')
+    getBlogList() {
+        return this.blogService.getBlogList();
     }
 
     @Post('/update')
-    @UseGuards(JwtAuthGuard)
-    async updateBlog(
-        @Body() payload: {},
-    ) {
-        return await this.blogService.updateBlog(payload);
+    @UseGuards(AuthGuard('jwt'))
+    update(@Body() payload: any) {
+        return this.blogService.updateBlog(payload);
     }
 
-    @Delete('/delete/:_id')
-    @UseGuards(JwtAuthGuard)
-    async deleteBlog(@Param('_id') _id: string) {
-        return await this.blogService.deleteBlog(_id);
+    @Get('/delete/:id')
+    @UseGuards(AuthGuard('jwt'))
+    delete(@Param('id') id: number) {
+        return this.blogService.deleteBlog(id);
     }
 }
